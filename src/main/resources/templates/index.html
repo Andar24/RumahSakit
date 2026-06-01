@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CarePulse | Solusi Kesehatan Terpadu</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script id="tailwind-config">
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#004ac6", "primary-container": "#2563eb", "on-primary-container": "#eeefff", surface: "#f7f9fb", "surface-container-low": "#f2f4f6", "surface-container-lowest": "#ffffff", "on-surface": "#191c1e", "on-surface-variant": "#434655", "outline-variant": "#c3c6d7", error: "#ba1a1a", "error-container": "#ffdad6", tertiary: "#006329", "tertiary-fixed": "#7ffc97", "secondary-fixed": "#dce1ff", "secondary": "#4059aa" }, fontFamily: { "headline-md": ["Plus Jakarta Sans"], "body-md": ["Inter"], "label-md": ["Inter"], "display-lg": ["Plus Jakarta Sans"] } } } }
+    </script>
+
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; overflow-x: hidden; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.5); }
+        .spa-page { display: none; animation: fadeIn 0.4s ease; min-height: 100vh; width: 100vw; }
+        .spa-page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-on-surface">
+
+<!-- ==============================================
+     1. VIEW BERANDA
+=============================================== -->
+<div id="view-beranda" class="spa-page active">
+    <header class="bg-surface/80 backdrop-blur-md border-b border-outline-variant/10 shadow-sm sticky top-0 z-50 h-16">
+        <nav class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto h-full">
+            <div class="flex items-center gap-8">
+                <span class="font-bold text-primary text-2xl font-headline-md cursor-pointer" onclick="navigateTo('view-beranda')">CarePulse</span>
+                <div class="hidden md:flex items-center gap-6">
+                    <a class="text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer">Beranda</a>
+                    <a class="text-on-surface-variant font-medium hover:text-primary transition-colors cursor-pointer" onclick="navigateTo('view-cari-dokter')">Cari Dokter</a>
+                    <a class="text-on-surface-variant font-medium hover:text-primary transition-colors cursor-pointer" onclick="navigateTo('view-layanan')">Layanan Poli</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="font-medium text-on-surface-variant hover:text-primary" onclick="navigateTo('view-auth'); toggleAuth('login');">Masuk</button>
+                <button class="px-6 py-2 bg-primary text-white rounded-lg font-bold shadow-sm hover:opacity-90 transition-all" onclick="navigateTo('view-auth'); toggleAuth('register');">Daftar</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="relative pt-24 pb-20 px-6 md:px-10 overflow-hidden">
+            <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.08),transparent_50%)]"></div>
+            <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+                <div class="w-full lg:w-3/5 space-y-8">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm font-bold">
+                        <span class="material-symbols-outlined text-[18px]">verified</span> Terpercaya oleh +10jt Pasien
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-on-surface leading-tight font-display-lg">
+                        Layanan Kesehatan <br> Sahabat Keluarga Anda.
+                    </h1>
+                    <p class="text-lg text-on-surface-variant max-w-2xl">
+                        Konsultasi dokter, booking rumah sakit, hingga cek ketersediaan ranjang secara real-time. Kemudahan akses kesehatan dalam satu genggaman.
+                    </p>
+                    <div class="glass-card flex items-center p-2 rounded-xl shadow-md border border-gray-200 mt-8">
+                        <span class="material-symbols-outlined text-gray-400 mx-3">search</span>
+                        <input class="w-full bg-transparent border-none focus:ring-0 text-on-surface py-2 outline-none" placeholder="Cari gejala, dokter, atau spesialisasi..." type="text"/>
+                        <button class="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:opacity-90 ml-2 transition-all" onclick="navigateTo('view-cari-dokter')">Cari</button>
+                    </div>
+                </div>
+                <div class="w-full lg:w-2/5 relative">
+                    <div class="rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-[4/3]">
+                        <img alt="Hospital Lobby" class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800&auto=format&fit=crop"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Akses Cepat -->
+        <section class="py-12 px-6 md:px-10 bg-surface-container-low">
+            <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+                <button class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-left hover:-translate-y-1 transition-transform" onclick="navigateTo('view-layanan')">
+                    <div class="w-14 h-14 rounded-xl bg-blue-100 text-blue-600 mb-4 flex items-center justify-center"><span class="material-symbols-outlined text-[32px]">local_hospital</span></div>
+                    <h3 class="font-bold text-lg mb-1">Informasi Poli</h3>
+                    <p class="text-sm text-gray-500">Kenali layanan spesialis kami.</p>
+                </button>
+                <button class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-left hover:-translate-y-1 transition-transform" onclick="navigateTo('view-cari-dokter')">
+                    <div class="w-14 h-14 rounded-xl bg-green-100 text-green-600 mb-4 flex items-center justify-center"><span class="material-symbols-outlined text-[32px]">calendar_today</span></div>
+                    <h3 class="font-bold text-lg mb-1">Buat Janji RS</h3>
+                    <p class="text-sm text-gray-500">Booking jadwal pemeriksaan.</p>
+                </button>
+                <button class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-left hover:-translate-y-1 transition-transform">
+                    <div class="w-14 h-14 rounded-xl bg-purple-100 text-purple-600 mb-4 flex items-center justify-center"><span class="material-symbols-outlined text-[32px]">bed</span></div>
+                    <h3 class="font-bold text-lg mb-1">Status Ranjang</h3>
+                    <p class="text-sm text-gray-500">Pantau IGD & ICU real-time.</p>
+                </button>
+                <button class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-left hover:-translate-y-1 transition-transform">
+                    <div class="w-14 h-14 rounded-xl bg-gray-100 text-gray-600 mb-4 flex items-center justify-center"><span class="material-symbols-outlined text-[32px]">article</span></div>
+                    <h3 class="font-bold text-lg mb-1">Artikel Medis</h3>
+                    <p class="text-sm text-gray-500">Edukasi kesehatan terkini.</p>
+                </button>
+            </div>
+        </section>
+
+        <section class="py-20 px-6 md:px-10">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+                <div class="w-full md:w-1/2">
+                    <h2 class="text-4xl font-bold mb-4">Informasi Gawat Darurat (Real-Time)</h2>
+                    <p class="text-lg text-gray-600 mb-6">Sistem kami terhubung langsung dengan pusat data rumah sakit rekanan untuk memberikan informasi akurat mengenai ketersediaan fasilitas gawat darurat.</p>
+                    <div class="flex gap-6 mb-6">
+                        <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-green-600"></span><span class="font-bold">Tersedia</span></div>
+                        <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-red-600"></span><span class="font-bold">Penuh</span></div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm relative">
+                        <div class="flex justify-between items-start mb-4">
+                            <div><p class="text-sm text-gray-500">Instalasi Gawat Darurat</p><h4 class="font-bold text-2xl">IGD</h4></div>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded text-xs font-bold animate-pulse">Live</span>
+                        </div>
+                        <div class="flex items-baseline gap-2"><span class="text-6xl font-bold">5</span><span class="text-gray-500">Sisa Ranjang</span></div>
+                        <div class="mt-6 h-3 w-full bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[25%]"></div></div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm relative">
+                        <div class="flex justify-between items-start mb-4">
+                            <div><p class="text-sm text-gray-500">Intensive Care Unit</p><h4 class="font-bold text-2xl">ICU</h4></div>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded text-xs font-bold animate-pulse">Live</span>
+                        </div>
+                        <div class="flex items-baseline gap-2"><span class="text-6xl font-bold">2</span><span class="text-gray-500">Sisa Ranjang</span></div>
+                        <div class="mt-6 h-3 w-full bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-red-500 w-[10%]"></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-50 border-t border-gray-200 py-10 px-8 mt-10">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <span class="font-bold text-primary text-2xl">CarePulse</span>
+                    <p class="text-sm text-gray-500 mt-2">© 2024 CarePulse Health. Terdaftar dan diawasi oleh Kemenkes RI.</p>
+                </div>
+                <div class="flex gap-6 font-bold text-sm text-gray-600">
+                    <a href="#" class="hover:text-primary">Tentang Kami</a>
+                    <a href="#" class="hover:text-primary">Kebijakan Privasi</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<!-- ==============================================
+     2. VIEW LAYANAN POLIKLINIK
+=============================================== -->
+<div id="view-layanan" class="spa-page">
+    <header class="bg-surface/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 h-16">
+        <nav class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto h-full">
+            <span class="font-bold text-primary text-2xl cursor-pointer" onclick="navigateTo('view-beranda')">CarePulse</span>
+            <button class="font-bold text-gray-500 hover:text-primary cursor-pointer" onclick="navigateTo('view-beranda')">← Kembali</button>
+        </nav>
+    </header>
+    <main class="max-w-7xl mx-auto px-8 py-12 min-h-screen">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <h2 class="text-4xl font-bold mb-4">Layanan Poliklinik</h2>
+            <p class="text-lg text-gray-600">Detail layanan medis, fasilitas, dan daftar dokter spesialis.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all group">
+                <div class="h-48 bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[80px]">pulmonology</span></div>
+                <div class="p-8">
+                    <h3 class="font-bold text-2xl mb-2">Penyakit Dalam</h3>
+                    <p class="text-gray-500">Pencegahan, diagnosis, dan pengobatan penyakit organ dalam.</p>
+                    <button class="text-primary font-bold mt-6 hover:underline" onclick="navigateTo('view-cari-dokter')">Cari Dokter Spesialis →</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all group">
+                <div class="h-48 bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[80px]">child_care</span></div>
+                <div class="p-8">
+                    <h3 class="font-bold text-2xl mb-2">Klinik Anak</h3>
+                    <p class="text-gray-500">Perawatan kesehatan anak dari bayi hingga remaja.</p>
+                    <button class="text-primary font-bold mt-6 hover:underline" onclick="navigateTo('view-cari-dokter')">Cari Dokter Spesialis →</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all group">
+                <div class="h-48 bg-red-50 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-colors"><span class="material-symbols-outlined text-[80px]">cardiology</span></div>
+                <div class="p-8">
+                    <h3 class="font-bold text-2xl mb-2">Jantung & Pembuluh</h3>
+                    <p class="text-gray-500">Evaluasi kardiovaskular dan rekam jantung (EKG).</p>
+                    <button class="text-primary font-bold mt-6 hover:underline" onclick="navigateTo('view-cari-dokter')">Cari Dokter Spesialis →</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ==============================================
+     3. VIEW CARI DOKTER
+=============================================== -->
+<div id="view-cari-dokter" class="spa-page">
+    <header class="bg-surface/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 h-16">
+        <nav class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto h-full">
+            <span class="font-bold text-primary text-2xl cursor-pointer" onclick="navigateTo('view-beranda')">CarePulse</span>
+            <button class="font-bold text-gray-500 hover:text-primary cursor-pointer" onclick="navigateTo('view-beranda')">← Kembali</button>
+        </nav>
+    </header>
+    <main class="max-w-7xl mx-auto px-8 py-10 min-h-screen flex flex-col md:flex-row gap-10">
+        <aside class="w-full md:w-80 space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                <h2 class="text-2xl font-bold mb-6">Filter Pencarian</h2>
+                <div class="relative mb-6">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-gray-400">search</span>
+                    <input class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:border-primary outline-none" placeholder="Cari Nama Dokter..." type="text"/>
+                </div>
+                <label class="font-bold block mb-3">Poliklinik</label>
+                <div class="space-y-3 mb-8">
+                    <label class="flex items-center gap-3"><input type="checkbox" checked class="w-5 h-5 text-primary"/> Semua Spesialis</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 text-primary"/> Penyakit Dalam</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 text-primary"/> Spesialis Anak</label>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex-1 space-y-6">
+            <p class="text-gray-600">Ditemukan <span class="font-bold text-gray-900 text-lg">2 Dokter</span></p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Dokter 1 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-6 flex gap-4">
+                        <img alt="Dr. Aris" class="w-24 h-24 rounded-xl object-cover" src="https://ui-avatars.com/api/?name=Aris+Purwanto&background=0D8ABC&color=fff"/>
+                        <div>
+                            <h3 class="font-bold text-primary text-xl">Dr. Aris Purwanto, Sp.PD</h3>
+                            <p class="text-gray-500 mb-2">Spesialis Penyakit Dalam</p>
+                            <div class="flex items-center gap-1 bg-green-50 px-2 py-1 rounded w-fit"><span class="material-symbols-outlined text-green-600 text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="text-green-700 font-bold text-xs">4.9</span></div>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-gray-50 border-t border-gray-100">
+                        <p class="text-sm font-bold mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm">schedule</span> Jadwal Hari Ini (Selasa)</p>
+                        <div class="flex gap-2 mb-6"><span class="px-3 py-1.5 bg-white border border-gray-200 text-sm rounded-lg font-medium">09:00 - 11:00</span></div>
+                        <button class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:opacity-90" onclick="navigateTo('view-auth'); toggleAuth('login');">Buat Janji Temu</button>
+                    </div>
+                </div>
+                <!-- Dokter 2 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-6 flex gap-4">
+                        <img alt="Dr. Sarah" class="w-24 h-24 rounded-xl object-cover" src="https://ui-avatars.com/api/?name=Sarah+Wijaya&background=E11D48&color=fff"/>
+                        <div>
+                            <h3 class="font-bold text-primary text-xl">Dr. Sarah Wijaya, Sp.A</h3>
+                            <p class="text-gray-500 mb-2">Spesialis Anak</p>
+                            <div class="flex items-center gap-1 bg-green-50 px-2 py-1 rounded w-fit"><span class="material-symbols-outlined text-green-600 text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="text-green-700 font-bold text-xs">5.0</span></div>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-gray-50 border-t border-gray-100">
+                        <p class="text-sm font-bold mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm">schedule</span> Jadwal Hari Ini (Selasa)</p>
+                        <div class="flex gap-2 mb-6"><span class="px-3 py-1.5 bg-white border border-gray-200 text-sm rounded-lg font-medium">10:00 - 14:00</span></div>
+                        <button class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:opacity-90" onclick="navigateTo('view-auth'); toggleAuth('login');">Buat Janji Temu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ==============================================
+     4. VIEW AUTH (LOGIN, REGISTER, FORGOT)
+=============================================== -->
+<div id="view-auth" class="spa-page">
+    <main class="min-h-screen w-full flex flex-col md:flex-row">
+        <section class="hidden md:flex md:w-1/2 bg-primary items-center justify-center p-12 text-white relative">
+            <div class="relative z-10 max-w-lg text-center">
+                <h1 class="text-6xl font-bold mb-6 font-display-lg">CarePulse Auth</h1>
+                <p class="text-xl opacity-90 mb-10">Kelola janji temu dan rekam medis dengan mudah dan aman.</p>
+                <div class="text-sm opacity-80 text-left bg-blue-800/30 p-4 rounded-xl">
+                    <b>Bantuan Akun Default:</b><br>
+                    - Admin: admin@klinik.com <br>
+                    - Poli: poli@klinik.com <br>
+                    *Sandi semuanya: 123
+                </div>
+            </div>
+        </section>
+        <section class="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
+            <div class="w-full max-w-[400px]">
+                <!-- LOGIN FORM -->
+                <div id="login-container">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-2">Selamat Datang</h2>
+                    <p class="text-gray-500 mb-8 text-lg">Masukkan detail akun untuk melanjutkan.</p>
+                    <form id="loginFormAPI" class="space-y-6">
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-2">Email</label>
+                            <input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary focus:ring-1" id="login-email" type="email" placeholder="contoh@email.com" required/>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block font-bold text-gray-700">Kata Sandi</label>
+                                <a href="#" onclick="toggleAuth('forgot')" class="text-sm font-bold text-primary hover:underline">Lupa Sandi?</a>
+                            </div>
+                            <input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary focus:ring-1" id="login-password" type="password" placeholder="••••••••" required/>
+                        </div>
+                        <button type="submit" id="login-btn" class="w-full bg-primary text-white font-bold text-lg p-4 rounded-xl flex justify-center items-center gap-2 hover:bg-blue-700 transition-all">
+                            Masuk Ke Akun <span class="material-symbols-outlined text-[24px]">arrow_forward</span>
+                        </button>
+                    </form>
+                    <div class="mt-8 text-center text-gray-500">
+                        Belum memiliki akun? <button class="text-primary font-bold hover:underline" onclick="toggleAuth('register')">Daftar Sekarang</button><br><br>
+                        <button class="text-gray-400 hover:text-primary transition-colors" onclick="navigateTo('view-beranda')">← Kembali ke Beranda</button>
+                    </div>
+                </div>
+
+                <!-- REGISTER FORM -->
+                <div id="register-container" style="display:none;">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-6">Daftar Pasien</h2>
+                    <form id="registerFormAPI" class="space-y-5">
+                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary" id="reg-name" type="text" placeholder="Nama Lengkap" required/></div>
+                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary" id="reg-email" type="email" placeholder="Email Aktif" required/></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <select class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary text-gray-600" id="reg-blood"><option value="A">Gol. A</option><option value="B">Gol. B</option><option value="AB">Gol. AB</option><option value="O">Gol. O</option></select>
+                            <input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary" id="reg-password" type="password" placeholder="Buat Sandi" required/>
+                        </div>
+                        <button type="submit" class="w-full bg-primary text-white font-bold text-lg p-4 rounded-xl flex justify-center items-center gap-2 hover:bg-blue-700 transition-all mt-4">
+                            Buat Akun <span class="material-symbols-outlined text-[24px]">person_add</span>
+                        </button>
+                    </form>
+                    <div class="mt-8 text-center text-gray-500">Sudah punya akun? <button class="text-primary font-bold hover:underline" onclick="toggleAuth('login')">Masuk di sini</button></div>
+                </div>
+
+                <!-- FORGOT PASSWORD FORM -->
+                <div id="forgot-container" style="display:none;">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-2">Lupa Sandi?</h2>
+                    <p class="text-gray-500 mb-8 text-lg">Masukkan email terdaftar, kami akan memulihkannya.</p>
+                    <form id="forgotFormAPI" class="space-y-6">
+                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary" id="forgot-email" type="email" placeholder="Email Anda" required/></div>
+                        <button type="submit" class="w-full bg-primary text-white font-bold text-lg p-4 rounded-xl flex justify-center items-center gap-2 hover:bg-blue-700 transition-all mt-4">
+                            Pulihkan Sandi <span class="material-symbols-outlined text-[24px]">lock_reset</span>
+                        </button>
+                    </form>
+                    <div class="mt-8 text-center text-gray-500">Ingat sandi Anda? <button class="text-primary font-bold hover:underline" onclick="toggleAuth('login')">Masuk kembali</button></div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- ==============================================
+     5. VIEW DASHBOARD ADMIN (DENGAN TAMBAH POLI)
+=============================================== -->
+<div id="view-dashboard-admin" class="spa-page">
+    <div class="flex min-h-screen bg-surface-container-low">
+        <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
+            <h1 class="font-bold text-3xl text-primary mb-10 cursor-pointer" onclick="navigateTo('view-beranda')">Admin Panel</h1>
+            <nav class="flex flex-col gap-3 flex-1">
+                <a class="bg-blue-50 text-blue-700 font-bold p-4 rounded-xl flex items-center gap-4"><span class="material-symbols-outlined">dashboard</span> Kelola Akun Sistem</a>
+            </nav>
+            <div class="border-t border-gray-200 pt-6">
+                <button class="w-full text-red-500 hover:bg-red-50 p-4 rounded-xl flex items-center gap-4 font-bold transition" onclick="logout()"><span class="material-symbols-outlined">logout</span> Keluar</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 ml-[280px] p-10">
+            <h2 class="text-3xl font-bold mb-10">Pusat Manajemen Akun</h2>
+            <!-- GRID 3 KOLOM: Tambah Dokter, Admin, Poli -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Tambah Dokter -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex items-center gap-4 mb-6 text-blue-600"><span class="material-symbols-outlined text-[32px]">person_add</span><h3 class="font-bold text-xl text-gray-800">Tambah Dokter</h3></div>
+                    <form id="formAddDokter" class="space-y-4">
+                        <input type="text" id="new-dokter-nama" placeholder="Nama & Gelar" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <input type="email" id="new-dokter-email" placeholder="Email Dokter" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <input type="password" id="new-dokter-pass" placeholder="Sandi Awal" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-xl font-bold transition">Daftarkan Dokter</button>
+                    </form>
+                </div>
+                <!-- Tambah Admin -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex items-center gap-4 mb-6 text-purple-600"><span class="material-symbols-outlined text-[32px]">admin_panel_settings</span><h3 class="font-bold text-xl text-gray-800">Tambah Admin</h3></div>
+                    <form id="formAddAdmin" class="space-y-4">
+                        <input type="text" id="new-admin-nama" placeholder="Nama Lengkap" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <input type="email" id="new-admin-email" placeholder="Email Admin" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <input type="password" id="new-admin-pass" placeholder="Sandi Akses" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white w-full py-3 rounded-xl font-bold transition">Tambahkan Admin</button>
+                    </form>
+                </div>
+                <!-- Tambah Staf Poli -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex items-center gap-4 mb-6 text-green-600"><span class="material-symbols-outlined text-[32px]">support_agent</span><h3 class="font-bold text-xl text-gray-800">Tambah Staf Poli</h3></div>
+                    <form id="formAddPoli" class="space-y-4">
+                        <input type="text" id="new-poli-nama" placeholder="Nama Staf/Poli" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <input type="email" id="new-poli-email" placeholder="Email Akun Poli" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <input type="password" id="new-poli-pass" placeholder="Sandi Akses" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white w-full py-3 rounded-xl font-bold transition">Tambahkan Staf</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- ==============================================
+     6. VIEW DASHBOARD POLI (BARU)
+=============================================== -->
+<div id="view-dashboard-poli" class="spa-page">
+    <div class="flex min-h-screen bg-surface-container-low">
+        <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
+            <h1 class="font-bold text-3xl text-primary mb-10 cursor-pointer" onclick="navigateTo('view-beranda')">Panel Poli</h1>
+            <nav class="flex flex-col gap-3 flex-1">
+                <a class="bg-green-50 text-green-700 font-bold p-4 rounded-xl flex items-center gap-4"><span class="material-symbols-outlined">how_to_reg</span> Kelola Antrean</a>
+                <a class="text-gray-600 hover:bg-gray-100 p-4 rounded-xl flex items-center gap-4"><span class="material-symbols-outlined">security</span> Keamanan</a>
+            </nav>
+            <button class="text-red-500 hover:bg-red-50 p-4 rounded-xl flex items-center gap-4 font-bold" onclick="logout()"><span class="material-symbols-outlined">logout</span> Keluar</button>
+        </aside>
+
+        <main class="flex-1 ml-[280px] p-10">
+            <h2 class="text-4xl font-bold mb-10">Verifikasi Kedatangan Pasien</h2>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-10">
+                <div class="p-6 border-b border-gray-200"><h3 class="font-bold text-lg">Daftar Pasien Terjadwal Hari Ini</h3></div>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-gray-500 border-b border-gray-200">
+                    <tr><th class="p-4">Kode Janji</th><th class="p-4">Pasien</th><th class="p-4">Dokter Tujuan</th><th class="p-4">Jam</th><th class="p-4 text-right">Aksi Kedatangan</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="p-4 font-bold">JT-001</td><td class="p-4">Budi Santoso</td><td class="p-4">Dr. Sarah Wijaya</td><td class="p-4">09:00</td>
+                        <td class="p-4 text-right"><button class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700" onclick="alert('Pasien berhasil di Check-In! Data masuk ke layar Dokter.')">Check-In</button></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4 font-bold">JT-002</td><td class="p-4">Alex</td><td class="p-4">Dr. Aris Purwanto</td><td class="p-4">10:30</td>
+                        <td class="p-4 text-right"><button class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700" onclick="alert('Pasien berhasil di Check-In! Data masuk ke layar Dokter.')">Check-In</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- FORM UBAH SANDI POLI -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-xl">
+                <div class="flex items-center gap-4 mb-6"><span class="material-symbols-outlined text-[32px] text-gray-500">lock_reset</span><h3 class="font-bold text-xl">Ubah Kata Sandi Poli</h3></div>
+                <form id="formChangePassPoli" class="space-y-4">
+                    <input type="password" id="poli-old-pass" placeholder="Kata Sandi Lama" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                    <input type="password" id="poli-new-pass" placeholder="Kata Sandi Baru" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white w-full py-3 rounded-xl font-bold mt-2">Simpan Sandi Baru</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- ==============================================
+     7. VIEW DASHBOARD DOKTER
+=============================================== -->
+<div id="view-dashboard-dokter" class="spa-page">
+    <div class="flex min-h-screen bg-surface-container-low">
+        <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
+            <h1 class="font-bold text-3xl text-primary mb-10 cursor-pointer" onclick="navigateTo('view-beranda')">Panel Dokter</h1>
+            <nav class="flex flex-col gap-3 flex-1">
+                <a class="bg-blue-50 text-blue-700 font-bold p-4 rounded-xl flex items-center gap-4"><span class="material-symbols-outlined">security</span> Pengaturan Keamanan</a>
+            </nav>
+            <button class="text-red-500 hover:bg-red-50 p-4 rounded-xl flex items-center gap-4 font-bold" onclick="logout()"><span class="material-symbols-outlined">logout</span> Keluar</button>
+        </aside>
+
+        <main class="flex-1 ml-[280px] p-10">
+            <h2 class="text-4xl font-bold mb-10">Pengaturan Akun</h2>
+            <!-- FORM UBAH SANDI DOKTER -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-xl">
+                <div class="flex items-center gap-4 mb-8"><span class="material-symbols-outlined text-[32px] text-gray-500">lock_reset</span><h3 class="font-bold text-2xl">Ubah Kata Sandi</h3></div>
+                <form id="formChangePassDokter" class="space-y-6">
+                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Lama</label><input type="password" id="dokter-old-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50" required></div>
+                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Baru</label><input type="password" id="dokter-new-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50" required></div>
+                    <button type="submit" class="bg-primary hover:bg-blue-700 text-white w-full py-4 rounded-xl font-bold text-lg mt-4">Simpan Sandi Baru</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- ==============================================
+     8. VIEW DASHBOARD PASIEN
+=============================================== -->
+<div id="view-dashboard-pasien" class="spa-page">
+    <div class="flex min-h-screen bg-surface-container-low">
+        <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
+            <h1 class="font-bold text-3xl text-primary mb-10 cursor-pointer" onclick="navigateTo('view-beranda')">Panel Pasien</h1>
+            <nav class="flex flex-col gap-3 flex-1">
+                <a class="bg-blue-50 text-blue-700 font-bold p-4 rounded-xl flex items-center gap-4"><span class="material-symbols-outlined">dashboard</span> Beranda Pasien</a>
+            </nav>
+            <button class="text-red-500 hover:bg-red-50 p-4 rounded-xl flex items-center gap-4 font-bold" onclick="logout()"><span class="material-symbols-outlined">logout</span> Keluar</button>
+        </aside>
+
+        <main class="flex-1 ml-[280px] p-10">
+            <h2 class="text-4xl font-bold mb-4 text-primary">Selamat Datang di CarePulse</h2>
+            <p class="text-lg text-gray-600 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm inline-block mb-10">Akun pasien Anda berhasil dibuat dan diverifikasi.</p>
+
+            <!-- FORM UBAH SANDI PASIEN -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-xl">
+                <div class="flex items-center gap-4 mb-8"><span class="material-symbols-outlined text-[32px] text-gray-500">lock_reset</span><h3 class="font-bold text-2xl">Keamanan: Ubah Kata Sandi</h3></div>
+                <form id="formChangePassPasien" class="space-y-6">
+                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Lama</label><input type="password" id="pasien-old-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50" required></div>
+                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Baru</label><input type="password" id="pasien-new-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50" required></div>
+                    <button type="submit" class="bg-primary hover:bg-blue-700 text-white w-full py-4 rounded-xl font-bold text-lg mt-4">Simpan Sandi Baru</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
