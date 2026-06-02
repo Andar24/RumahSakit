@@ -1,108 +1,73 @@
 package com.example.carepulse.controller;
 
+import com.example.carepulse.model.Pasien;
+import com.example.carepulse.model.User;
+import com.example.carepulse.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class AuthController {
 
-    private static List<Map<String, String>> users = new ArrayList<>();
+    @Autowired
+    private UserRepository userRepository;
 
-    public AuthController() {
-        // Akun Admin Default
-        Map<String, String> admin = new HashMap<>();
-        admin.put("email", "admin@klinik.com");
-        admin.put("password", "123");
-        admin.put("role", "ADMIN");
-        admin.put("nama", "Admin Utama");
-        users.add(admin);
-
-        // Akun Staf Poli Default (BARU)
-        Map<String, String> poli = new HashMap<>();
-        poli.put("email", "poli@klinik.com");
-        poli.put("password", "123");
-        poli.put("role", "POLI");
-        poli.put("nama", "Resepsionis Poli Anak");
-        users.add(poli);
-    }
-
+    // 1. LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> data) {
-        for (Map<String, String> user : users) {
-            if (user.get("email").equals(data.get("email")) && user.get("password").equals(data.get("password"))) {
+        Optional<User> userOpt = userRepository.findByEmail(data.get("email"));
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getPassword().equals(data.get("password"))) {
                 Map<String, Object> res = new HashMap<>();
                 res.put("status", "success");
-                res.put("role", user.get("role"));
-                res.put("nama", user.get("nama"));
-                res.put("email", user.get("email"));
+
+                // Samakan nama role untuk file app.js
+                String role = user.getRole();
+                if (role.equals("PEGAWAI_POLI")) role = "POLI";
+
+                res.put("role", role);
+                res.put("nama", user.getNamaLengkap());
+                res.put("email", user.getEmail());
                 return ResponseEntity.ok(res);
             }
         }
         return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email atau Sandi salah!"));
     }
 
+    // 2. REGISTER PASIEN
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> data) {
-        return createUser(data, "PASIEN");
-    }
-
-    @PostMapping("/admin/add-dokter")
-    public ResponseEntity<?> addDokter(@RequestBody Map<String, String> data) {
-        return createUser(data, "DOKTER");
-    }
-
-    @PostMapping("/admin/add-admin")
-    public ResponseEntity<?> addAdmin(@RequestBody Map<String, String> data) {
-        return createUser(data, "ADMIN");
-    }
-
-    // FITUR BARU: ADMIN MENAMBAH STAF POLI
-    @PostMapping("/admin/add-poli")
-    public ResponseEntity<?> addPoli(@RequestBody Map<String, String> data) {
-        return createUser(data, "POLI");
-    }
-
-    private ResponseEntity<?> createUser(Map<String, String> data, String role) {
-        for (Map<String, String> u : users) {
-            if (u.get("email").equals(data.get("email"))) {
-                return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email sudah terdaftar!"));
-            }
+        if (userRepository.existsByEmail(data.get("email"))) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email sudah terdaftar!"));
         }
-        Map<String, String> newUser = new HashMap<>();
-        newUser.put("email", data.get("email"));
-        newUser.put("password", data.get("password"));
-        newUser.put("nama", data.get("nama"));
-        newUser.put("role", role);
-        users.add(newUser);
+        // Simpan pasien ke database permanen
+        Pasien pasien = new Pasien(data.get("email"), data.get("password"), data.get("nama"), "-");
+        userRepository.save(pasien);
         return ResponseEntity.ok(Collections.singletonMap("status", "success"));
     }
 
+    // 3. UBAH PASSWORD
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody Map<String, String> data) {
-        for (Map<String, String> user : users) {
-            if (user.get("email").equals(data.get("email"))) {
-                if (user.get("password").equals(data.get("oldPassword"))) {
-                    user.put("password", data.get("newPassword"));
-                    return ResponseEntity.ok(Collections.singletonMap("status", "success"));
-                } else {
-                    return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Sandi lama salah!"));
-                }
+        Optional<User> userOpt = userRepository.findByEmail(data.get("email"));
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getPassword().equals(data.get("oldPassword"))) {
+                // Pastikan model User.java Anda sudah memiliki public void setPassword(String password)
+                user.setPassword(data.get("newPassword"));
+                userRepository.save(user);
+                return ResponseEntity.ok(Collections.singletonMap("status", "success"));
             }
         }
-        return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Akses ditolak!"));
-    }
-
-    @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> data) {
-        String email = data.get("email");
-        for (Map<String, String> user : users) {
-            if (user.get("email").equals(email)) {
-                user.put("password", "123456");
-                return ResponseEntity.ok(Collections.singletonMap("message", "Link reset berhasil dikirim! (Simulasi: Sandi direset jadi '123456')"));
-            }
-        }
-        return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email tidak ditemukan!"));
+        return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Kata sandi lama salah atau user tidak ditemukan!"));
     }
 }

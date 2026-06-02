@@ -31,4 +31,7 @@ public abstract class User {
     public String getPassword() { return password; }
     public String getRole() { return role; }
     public String getNamaLengkap() { return namaLengkap; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

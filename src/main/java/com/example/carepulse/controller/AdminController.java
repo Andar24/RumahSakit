@@ -1,13 +1,12 @@
 package com.example.carepulse.controller;
 
-import com.example.carepulse.model.Admin;
-import com.example.carepulse.model.Dokter;
-import com.example.carepulse.repository.UserRepository;
+import com.example.carepulse.model.*;
+import com.example.carepulse.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -17,51 +16,45 @@ public class AdminController {
     @Autowired
     private UserRepository userRepository;
 
-    // --- API 1: ADMIN MENAMBAHKAN DOKTER BARU ---
-    @PostMapping("/create-dokter")
-    public ResponseEntity<?> createDokter(@RequestBody Map<String, String> data) {
-        Map<String, Object> response = new HashMap<>();
-
+    // --- 1. API Tambah Dokter ---
+    @PostMapping("/add-dokter")
+    public ResponseEntity<?> addDokter(@RequestBody Map<String, String> data) {
         if (userRepository.existsByEmail(data.get("email"))) {
-            response.put("status", "error");
-            response.put("message", "Email sudah terdaftar di sistem!");
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email sudah terdaftar!"));
         }
 
-        Dokter dokterBaru = new Dokter(
-                data.get("email"),
-                data.get("password"),
-                data.get("namaLengkap"),
-                data.get("spesialisasi")
-        );
-        userRepository.save(dokterBaru);
+        // Kita set "Umum" sebagai spesialisasi default jika belum dipilih dari UI
+        Dokter dokter = new Dokter(data.get("email"), data.get("password"), data.get("nama"), "Umum");
+        userRepository.save(dokter);
 
-        response.put("status", "success");
-        response.put("message", "Akun Dokter berhasil ditambahkan!");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Akun Dokter berhasil ditambahkan ke Database!"));
     }
 
-    // --- API 2: ADMIN MENAMBAHKAN ADMIN BARU ---
-    @PostMapping("/create-admin")
-    public ResponseEntity<?> createAdmin(@RequestBody Map<String, String> data) {
-        Map<String, Object> response = new HashMap<>();
-
+    // --- 2. API Tambah Admin ---
+    @PostMapping("/add-admin")
+    public ResponseEntity<?> addAdmin(@RequestBody Map<String, String> data) {
         if (userRepository.existsByEmail(data.get("email"))) {
-            response.put("status", "error");
-            response.put("message", "Email sudah terdaftar di sistem!");
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email sudah terdaftar!"));
         }
 
-        Admin adminBaru = new Admin(
-                data.get("email"),
-                data.get("password"),
-                data.get("namaLengkap"),
-                data.get("departemen")
-        );
-        userRepository.save(adminBaru);
+        Admin admin = new Admin(data.get("email"), data.get("password"), data.get("nama"), "Manajemen Pusat");
+        userRepository.save(admin);
 
-        response.put("status", "success");
-        response.put("message", "Akun Admin baru berhasil dibuat!");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Akun Admin berhasil ditambahkan ke Database!"));
+    }
+
+    // --- 3. API Tambah Staf Poli ---
+    // Pastikan Anda sudah membuat class PegawaiPoli.java pada Fase 1 sebelumnya.
+    @PostMapping("/add-poli")
+    public ResponseEntity<?> addPoli(@RequestBody Map<String, String> data) {
+        if (userRepository.existsByEmail(data.get("email"))) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email sudah terdaftar!"));
+        }
+
+        // Objek Poliklinik diset null (kosong) dahulu. Akan dihubungkan nanti.
+        PegawaiPoli poli = new PegawaiPoli(data.get("email"), data.get("password"), data.get("nama"), "Shift Reguler", null);
+        userRepository.save(poli);
+
+        return ResponseEntity.ok(Collections.singletonMap("message", "Akun Staf Poli berhasil ditambahkan ke Database!"));
     }
 }
